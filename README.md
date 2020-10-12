@@ -1,2 +1,2 @@
-# obj_det_rest_svc
+# Object Detection REST Microservice
 Object detection REST microservice

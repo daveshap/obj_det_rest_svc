@@ -22,7 +22,9 @@ def send_msg(data, meta, ip, port):
 
 
 def convert_from_json(json_str):
-    arr = np.array(json_str)
+    lists = json.loads(json_str)
+    arr = np.array(lists)
+    arr = arr / 255.0
     new_arr = np.expand_dims(arr, 0)
     tensor = tf.convert_to_tensor(new_arr)
     return tensor
@@ -50,4 +52,9 @@ def main():
 
 if __name__ == '__main__':
     print('starting faster rcnn inception resnet v2 object detector')
-    main()
+    images = fetch_images('127.0.0.1', 9999)  # TODO parameterize this
+    image_tensor = convert_from_json(images[0]['data'])
+    detector = hub.load("https://tfhub.dev/tensorflow/faster_rcnn/inception_resnet_v2_640x640/1")
+    detector_output = detector(image_tensor)
+    class_ids = detector_output["detection_classes"]
+    print(class_ids)
